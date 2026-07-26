@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
+import app from "./src/app.js";
+import { handleSocketConnection } from "./src/utils/socket.js";
 
 dotenv.config();
-const app = express();
 const server = createServer(app);
 
 const io = new Server(server, {
@@ -13,14 +13,7 @@ const io = new Server(server, {
   },
 });
 
-app.get("/", (req, res) => {
-  console.log("/ route reached");
-  res.status(200).send({ message: "Successful API call" });
-});
-
-io.on("connection", (socket) => {
-  console.log("Client connected successfully");
-});
+io.on("connection", handleSocketConnection);
 
 server.listen(process.env.PORT, () => {
   console.log(`App listening on port ${process.env.PORT}`);

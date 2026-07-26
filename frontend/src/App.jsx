@@ -3,7 +3,26 @@ import { io } from "socket.io-client";
 
 function App() {
   const socket = io("http://localhost:3000");
-  return <h1>Hello, world</h1>;
+  const [message, setMessage] = useState("");
+
+  socket.on("connect", (socket) => {
+    console.log("Doing something upon connection");
+  });
+
+  const handleClick = () => {
+    socket.emit("send-message", message);
+  };
+
+  return (
+    <>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button onClick={handleClick}>Send message</button>
+    </>
+  );
 }
 
 export default App;
