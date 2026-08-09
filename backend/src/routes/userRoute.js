@@ -1,10 +1,8 @@
 import express from "express";
+import { addNewUser } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  console.log("User Route reached");
-  res.status(200).send({ message: "User route reached" });
-});
+router.get("/new", addNewUser);
 
 export default router;
