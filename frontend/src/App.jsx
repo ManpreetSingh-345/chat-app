@@ -16,11 +16,14 @@ function App() {
   return (
     <>
       <input
+        name="message"
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button onClick={handleClick}>Send message</button>
+      <button onClick={handleClick} className="bg-green-300">
+        Send message
+      </button>
     </>
   );
 }
