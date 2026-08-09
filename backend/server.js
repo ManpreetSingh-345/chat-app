@@ -3,8 +3,10 @@ import { Server } from "socket.io";
 import { createServer } from "node:http";
 import app from "./src/app.js";
 import { handleSocketConnection } from "./src/utils/socket.js";
+import connectDB from "./src/db/db.js";
 
 dotenv.config();
+await connectDB();
 const server = createServer(app);
 
 const io = new Server(server, {
