@@ -22,8 +22,13 @@ export const addNewUser = async (req, res) => {
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
 
+  const hashedPassword = argon2.hash(password);
+
   try {
-    if (await User.findOne({ username })) {
+    if (
+      (await User.findOne({ username })) &&
+      argon2.verify(hashedPassword, password)
+    ) {
       res.send({ message: "User found" });
     } else {
       res.status(404).send({ message: "User not found" });

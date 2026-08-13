@@ -6,7 +6,9 @@ const connectDB = async () => {
     .then(() => {
       console.log("Connected to database!");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return Promise.reject(err);
+    });
 };
 
 export default connectDB;

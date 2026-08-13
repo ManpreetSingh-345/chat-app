@@ -6,7 +6,6 @@ import { handleSocketConnection } from "./src/utils/socket.js";
 import connectDB from "./src/db/db.js";
 
 dotenv.config();
-await connectDB();
 const server = createServer(app);
 
 const io = new Server(server, {
@@ -17,6 +16,12 @@ const io = new Server(server, {
 
 io.on("connection", handleSocketConnection);
 
-server.listen(process.env.PORT, () => {
-  console.log(`App listening on port ${process.env.PORT}`);
-});
+connectDB()
+  .then(() => {
+    server.listen(process.env.PORT, () => {
+      console.log(`App listening on port ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("Error encountered during database connection:", err);
+  });
