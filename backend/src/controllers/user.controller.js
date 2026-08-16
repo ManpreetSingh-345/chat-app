@@ -5,7 +5,6 @@ export const addNewUser = async (req, res) => {
   console.log("Adding new user");
   const { username, password } = req.body;
   try {
-    await persistUser(username, password);
     res.status(201).send({ message: "New user added successfully" });
   } catch (err) {
     console.log(err);
@@ -19,7 +18,7 @@ export const authenticateUser = async (req, res) => {
   try {
     const user = await findUser(username, password);
     if (user.username) {
-      res.status(200).send({ message: "User found" });
+      res.status(200).send({ message: "User found", user });
     } else {
       res.status(404).send({ message: "User not found" });
     }
