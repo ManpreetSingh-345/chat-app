@@ -1,17 +1,11 @@
-import User from "../models/User.js";
-import argon2 from "argon2";
+import findUser from "../services/findUser.js";
+import persistUser from "../services/persistUser.js";
 
 export const addNewUser = async (req, res) => {
   console.log("Adding new user");
-  const hashedPassword = await argon2.hash("StrongPass");
+  const { username, password } = req.body;
   try {
-    const newUser = new User({
-      username: "New user",
-      hashedPassword,
-      role: "user",
-    });
-    await newUser.save();
-    console.log("New user added successfully");
+    await persistUser(username, password);
     res.status(201).send({ message: "New user added successfully" });
   } catch (err) {
     console.log(err);
@@ -22,14 +16,10 @@ export const addNewUser = async (req, res) => {
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
 
-  const hashedPassword = argon2.hash(password);
-
   try {
-    if (
-      (await User.findOne({ username })) &&
-      argon2.verify(hashedPassword, password)
-    ) {
-      res.send({ message: "User found" });
+    const user = await findUser(username, password);
+    if (user.username) {
+      res.status(200).send({ message: "User found" });
     } else {
       res.status(404).send({ message: "User not found" });
     }
