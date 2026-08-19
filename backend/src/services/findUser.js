@@ -11,8 +11,11 @@ const findUser = async (username, password) => {
       message: "User found",
       username,
       accessToken: jwt.sign(
-        JSON.stringify({ username, password }),
-        process.env.ACCESS_TOKEN_SECRET
+        { username, password },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "5m",
+        }
       ),
     };
   }

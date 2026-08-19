@@ -5,6 +5,11 @@ import app from "./src/app.js";
 import { handleSocketConnection } from "./src/utils/socket.js";
 import connectDB from "./src/db/db.js";
 
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught error encountered: ", err);
+  process.exit(1);
+});
+
 dotenv.config();
 const server = createServer(app);
 
@@ -23,5 +28,8 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.log("Error encountered during database connection:", err);
+    console.log(
+      "Error encountered during database connection. Error details: \n",
+      err
+    );
   });
