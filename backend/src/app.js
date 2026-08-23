@@ -1,5 +1,6 @@
 import express from "express";
 import userRouter from "./routes/userRoute.js";
+import authRouter from "./routes/authRoute.js";
 
 const app = express();
 
@@ -8,6 +9,7 @@ app.use(express.json());
 
 // Routes
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 // Test route
 app.get("/", (req, res) => {

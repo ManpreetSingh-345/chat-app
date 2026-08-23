@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import app from "./src/app.js";
-import { handleSocketConnection } from "./src/utils/socket.js";
+import { handleSocketConnection } from "./src/utils/handleSocketConnection.js";
 import connectDB from "./src/db/db.js";
 
 process.on("uncaughtException", (err) => {

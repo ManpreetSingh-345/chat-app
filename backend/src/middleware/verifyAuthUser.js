@@ -1,21 +1,19 @@
 import jwt from "jsonwebtoken";
 
-const verifyAuthUser = async (req, res, next) => {
+const verifyAuthUser = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-  } catch (err) {
-    console.log("JSON web token error encountered. Details: ", err);
-    res.status(401).send({
-      message: "User is unauthorized to access requested resources",
-    });
-    process.exit(1);
-  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    if (err) {
+      res
+        .status(401)
+        .json({ message: "User not authorized to access resources" });
+    }
 
-  req.token = token; // Attach token to req object for downstream routes to use
+    req.user = decoded.username;
 
-  next();
+    next();
+  });
 };
 
 export default verifyAuthUser;
