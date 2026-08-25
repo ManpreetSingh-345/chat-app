@@ -1,4 +1,3 @@
-import findUser from "../services/findUser.js";
 import persistUser from "../services/persistUser.js";
 
 export const registerUser = async (req, res) => {
