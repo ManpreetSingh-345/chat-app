@@ -1,13 +1,14 @@
-import findUser from "../services/findUser.js";
-import persistToken from "../services/persistToken.js";
+import createUserService from "../services/userService.js";
+import createTokenService from "../services/tokenService.js";
 import jwt from "jsonwebtoken";
-import { findToken } from "../services/findToken.js";
 
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
+  const userService = createUserService();
+  const tokenService = createTokenService();
 
   try {
-    const user = await findUser(username, password);
+    const user = await userService.findUser(username, password);
     if (user) {
       const accessToken = jwt.sign(
         { id: user.id, role: user.role },
@@ -23,7 +24,7 @@ export const authenticateUser = async (req, res) => {
           expiresIn: "30m",
         }
       );
-      await persistToken(user._id, refreshToken);
+      await tokenService.persistToken(user._id, refreshToken);
       res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
         secure: true,
@@ -42,7 +43,13 @@ export const authenticateUser = async (req, res) => {
   }
 };
 
-export const logoutUser = (req, res) => {};
+export const logoutUser = (req, res) => {
+  const token = req.cookies["refresh-token"];
+
+  if (!token) return res.sendStatus(200);
+
+  res.clearCookie("refresh-token");
+};
 
 export const refreshUserToken = async (req, res) => {
   const refreshToken = req.cookies["refresh-token"];
@@ -58,7 +65,7 @@ export const refreshUserToken = async (req, res) => {
       return res.status(401).json({ message: "Invalid refresh token" });
     }
 
-    const foundToken = await findToken(refreshToken, decoded.id);
+    const foundToken = await tokenService.findToken(refreshToken, decoded.id);
 
     if (!foundToken)
       return res.status(401).json({ message: "Token not found in database" });
