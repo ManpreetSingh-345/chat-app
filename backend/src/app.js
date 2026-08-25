@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoute.js";
 import authRouter from "./routes/authRoute.js";
 
@@ -6,6 +7,7 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/users", userRouter);

@@ -39,4 +39,8 @@ export const authenticateUser = async (req, res) => {
 
 export const logoutUser = (req, res) => {};
 
-export const refreshUserToken = (req, res) => {};
+export const refreshUserToken = (req, res) => {
+  const refreshToken = req.cookies["refresh-token"];
+  console.log(refreshToken);
+  res.status(200).end();
+};
