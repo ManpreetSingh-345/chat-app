@@ -2,10 +2,11 @@ import createUserService from "../services/userService.js";
 import createTokenService from "../services/tokenService.js";
 import jwt from "jsonwebtoken";
 
+const userService = createUserService();
+const tokenService = createTokenService();
+
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
-  const userService = createUserService();
-  const tokenService = createTokenService();
 
   try {
     const user = await userService.findUser(username, password);
@@ -30,25 +31,40 @@ export const authenticateUser = async (req, res) => {
         secure: true,
         sameSite: "lax",
       });
-      res.status(200).send({
+      return res.status(200).send({
         message: "Logged in successfully",
         accessToken,
+        refreshToken,
       });
     } else {
-      res.status(401).send({ message: "Invalid credentials" });
+      return res.status(401).send({ message: "Invalid credentials" });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: "Server error encountered" });
+    return res.status(500).send({ message: "Server error encountered" });
   }
 };
 
-export const logoutUser = (req, res) => {
-  const token = req.cookies["refresh-token"];
+export const logoutUser = async (req, res) => {
+  const refreshToken =
+    req.cookies?.["refresh-token"] || req.headers.authorization?.split(" ")[1];
 
-  if (!token) return res.sendStatus(200);
+  res.clearCookie("refresh-token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
 
-  res.clearCookie("refresh-token");
+  if (!refreshToken)
+    return res.status(200).json({ message: "Logged out successfully" });
+
+  try {
+    await tokenService.deleteToken(refreshToken);
+
+    return res.status(200).json({ message: "User logged out successfully" });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export const refreshUserToken = async (req, res) => {

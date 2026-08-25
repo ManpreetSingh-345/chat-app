@@ -1,26 +1,38 @@
 import RefreshToken from "../models/RefreshToken.js";
-import argon2 from "argon2";
+import hashToken from "../utils/hashToken.js";
 
-export default function tokenService() {
+export default function createTokenService() {
   return {
-    findToken: async (userToken, userId) => {
-      const token = await RefreshToken.findOne({ userId });
+    findToken: async (token, userId) => {
+      const hashedToken = hashToken(token);
+      const foundToken = await RefreshToken.findOne({ hashedToken });
 
-      if (!token) return res.status(401);
-      if (await argon2.verify(token.hashedToken, userToken)) {
-        return token.toObject();
-      }
+      if (!foundToken) return null;
+      return foundToken;
     },
     persistToken: async (userId, token) => {
       try {
-        const hashedToken = await argon2.hash(token);
+        const hashedToken = hashToken(token);
         const newToken = new RefreshToken({
           userId,
           hashedToken,
         });
         await newToken.save();
       } catch (err) {
-        return Promise.reject(err);
+        throw new Error(err);
+      }
+    },
+    deleteToken: async (token) => {
+      try {
+        const hashedToken = hashToken(token);
+        const deletedUser = await RefreshToken.deleteOne({ hashedToken });
+        console.log(deletedUser);
+        if (!deletedUser) {
+          return null;
+        }
+        return deletedUser;
+      } catch (err) {
+        throw new Error(err);
       }
     },
   };
