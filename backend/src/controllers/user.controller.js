@@ -1,4 +1,5 @@
 import persistUser from "../services/persistUser.js";
+import persistToken from "../services/persistToken.js";
 
 export const registerUser = async (req, res) => {
   console.log("Adding new user");

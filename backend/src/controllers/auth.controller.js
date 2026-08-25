@@ -1,4 +1,5 @@
 import findUser from "../services/findUser.js";
+import persistToken from "../services/persistToken.js";
 import jwt from "jsonwebtoken";
 
 export const authenticateUser = async (req, res) => {
@@ -7,26 +8,29 @@ export const authenticateUser = async (req, res) => {
   try {
     const user = await findUser(username, password);
     if (user) {
-      res.cookie(
-        "refresh-token",
-        jwt.sign(
-          { id: user.id, role: user.role },
-          process.env.REFRESH_TOKEN_SECRET,
-          {
-            expiresIn: "30m",
-          }
-        ),
-        { httpOnly: true, secure: true, sameSite: "lax" }
+      const accessToken = jwt.sign(
+        { id: user.id, role: user.role },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "15m",
+        }
       );
+      const refreshToken = jwt.sign(
+        { id: user.id, role: user.role },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+          expiresIn: "30m",
+        }
+      );
+      await persistToken(user._id, refreshToken);
+      res.cookie("refresh-token", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+      });
       res.status(200).send({
         message: "Logged in successfully",
-        accessToken: jwt.sign(
-          { id: user.id, role: user.role },
-          process.env.ACCESS_TOKEN_SECRET,
-          {
-            expiresIn: "15m",
-          }
-        ),
+        accessToken,
       });
     } else {
       res.status(401).send({ message: "Invalid credentials" });

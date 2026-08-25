@@ -10,6 +10,7 @@ const userSchema = new Schema(
     role: String,
   },
   {
+    collections: "users",
     timestamps: true,
   }
 );

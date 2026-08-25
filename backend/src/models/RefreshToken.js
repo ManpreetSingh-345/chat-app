@@ -6,6 +6,7 @@ const refreshTokenSchema = new mongoose.Schema(
     hashedToken: String,
   },
   {
+    collection: "refresh-tokens",
     timestamps: true,
   }
 );
