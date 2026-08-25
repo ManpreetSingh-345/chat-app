@@ -3,7 +3,7 @@ import hashToken from "../utils/hashToken.js";
 
 export default function createTokenService() {
   return {
-    findToken: async (token, userId) => {
+    findToken: async (token) => {
       const hashedToken = hashToken(token);
       const foundToken = await RefreshToken.findOne({ hashedToken });
 

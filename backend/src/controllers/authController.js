@@ -81,7 +81,7 @@ export const refreshUserToken = async (req, res) => {
       return res.status(401).json({ message: "Invalid refresh token" });
     }
 
-    const foundToken = await tokenService.findToken(refreshToken, decoded.id);
+    const foundToken = await tokenService.findToken(refreshToken);
 
     if (!foundToken)
       return res.status(401).json({ message: "Token not found in database" });
