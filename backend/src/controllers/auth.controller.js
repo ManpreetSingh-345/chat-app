@@ -1,6 +1,7 @@
 import findUser from "../services/findUser.js";
 import persistToken from "../services/persistToken.js";
 import jwt from "jsonwebtoken";
+import { findToken } from "../services/findToken.js";
 
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
@@ -43,8 +44,32 @@ export const authenticateUser = async (req, res) => {
 
 export const logoutUser = (req, res) => {};
 
-export const refreshUserToken = (req, res) => {
+export const refreshUserToken = async (req, res) => {
   const refreshToken = req.cookies["refresh-token"];
-  console.log(refreshToken);
-  res.status(200).end();
+
+  if (!refreshToken) return res.sendStatus(401);
+
+  try {
+    let decoded;
+
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    const foundToken = await findToken(refreshToken, decoded.id);
+
+    if (!foundToken)
+      return res.status(401).json({ message: "Token not found in database" });
+
+    const newAccessToken = jwt.sign(
+      { id: decoded.id, role: decoded.role },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+    return res.status(200).json({ newAccessToken });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
