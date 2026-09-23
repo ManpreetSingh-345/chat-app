@@ -1,31 +1,8 @@
-import { useState } from "react";
-import { io } from "socket.io-client";
+import { router } from "./router.jsx";
+import { RouterProvider } from "react-router";
 
 function App() {
-  const socket = io("http://localhost:3000");
-  const [message, setMessage] = useState("");
-
-  socket.on("connect", (socket) => {
-    console.log("Doing something upon connection");
-  });
-
-  const handleClick = () => {
-    socket.emit("send-message", message);
-  };
-
-  return (
-    <>
-      <input
-        name="message"
-        type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={handleClick} className="bg-green-300">
-        Send message
-      </button>
-    </>
-  );
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;
