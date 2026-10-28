@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@react-router/node": "^7.18.5",
+    "@react-router/serve": "^7.18.5",
+    "isbot": "^5.2.2"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^7.18.5"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

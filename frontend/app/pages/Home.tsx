@@ -1,7 +1,7 @@
-import { Navbar } from "./components/Navbar";
-import { WavyBackground } from "./components/ui/wavy-background";
+import { Navbar } from "../components/Navbar";
+import { WavyBackground } from "../components/ui/wavy-background";
 
-function App() {
+const Home = () => {
   return (
     <>
       <WavyBackground
@@ -10,7 +10,7 @@ function App() {
         blur={10}
       >
         <Navbar />
-        <main className="flex flex-1 items-center justify-center px-6 text-center">
+        <main className="flex flex-1 items-center justify-center text-center mb-20">
           <p className="text-3xl md:text-5xl lg:text-6xl font-bold text-white">
             Break the Language Barrier
           </p>
@@ -18,6 +18,6 @@ function App() {
       </WavyBackground>
     </>
   );
-}
+};
 
-export default App;
+export default Home;
