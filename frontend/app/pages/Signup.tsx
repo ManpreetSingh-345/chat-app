@@ -1,6 +1,26 @@
 import { Link } from "react-router";
+import api from "../api/api";
+import { useState } from "react";
 
 const Signup = () => {
+  const [credentials, setCredentials] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    console.log(credentials);
+
+    if (credentials.password !== confirmPassword) {
+      alert("Passwords don't match");
+    }
+
+    api.get("/").then(() => console.log("Request worked"));
+  };
+
   return (
     <div>
       <main className="flex min-h-[calc(100vh-7rem)] w-full items-center justify-center px-5 py-10 text-white">
@@ -12,7 +32,7 @@ const Signup = () => {
             <h1 className="text-3xl font-bold">Create your account</h1>
           </div>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium">
                 Username
@@ -24,6 +44,9 @@ const Signup = () => {
                 autoComplete="username"
                 required
                 placeholder="Choose a username"
+                onChange={(e) =>
+                  setCredentials({ ...credentials, username: e.target.value })
+                }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
             </div>
@@ -39,6 +62,9 @@ const Signup = () => {
                 autoComplete="email"
                 required
                 placeholder="you@example.com"
+                onChange={(e) =>
+                  setCredentials({ ...credentials, email: e.target.value })
+                }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
             </div>
@@ -55,6 +81,9 @@ const Signup = () => {
                 minLength={8}
                 required
                 placeholder="At least 8 characters"
+                onChange={(e) =>
+                  setCredentials({ ...credentials, password: e.target.value })
+                }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
             </div>
@@ -71,6 +100,7 @@ const Signup = () => {
                 minLength={8}
                 required
                 placeholder="Re-enter your password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
             </div>

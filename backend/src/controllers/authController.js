@@ -28,7 +28,7 @@ export const authenticateUser = async (req, res) => {
       await tokenService.persistToken(user._id, refreshToken);
       res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       });
       return res.status(200).send({
@@ -51,7 +51,7 @@ export const logoutUser = async (req, res) => {
 
   res.clearCookie("refresh-token", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });
 
