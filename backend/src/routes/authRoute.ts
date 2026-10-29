@@ -3,7 +3,7 @@ import {
   authenticateUser,
   logoutUser,
   refreshUserToken,
-} from "../controllers/authController.js";
+} from "../controllers/authController.ts";
 
 const router = express.Router();
 

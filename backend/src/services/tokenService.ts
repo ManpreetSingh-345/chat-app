@@ -1,16 +1,17 @@
-import RefreshToken from "../models/RefreshToken.js";
-import hashToken from "../utils/hashToken.js";
+import RefreshToken from "../models/RefreshToken.ts";
+import hashToken from "../utils/hashToken.ts";
 
 export default function createTokenService() {
   return {
-    findToken: async (token) => {
+    findToken: async (token: string) => {
       const hashedToken = hashToken(token);
+
       const foundToken = await RefreshToken.findOne({ hashedToken });
 
       if (!foundToken) return null;
       return foundToken;
     },
-    persistToken: async (userId, token) => {
+    persistToken: async (userId: string, token: string) => {
       try {
         const hashedToken = hashToken(token);
         const newToken = new RefreshToken({
@@ -19,10 +20,10 @@ export default function createTokenService() {
         });
         await newToken.save();
       } catch (err) {
-        throw new Error(err);
+        throw new Error("Error saving token in the database.");
       }
     },
-    deleteToken: async (token) => {
+    deleteToken: async (token: string) => {
       try {
         const hashedToken = hashToken(token);
         const deletedUser = await RefreshToken.deleteOne({ hashedToken });
@@ -32,7 +33,7 @@ export default function createTokenService() {
         }
         return deletedUser;
       } catch (err) {
-        throw new Error(err);
+        throw new Error("Unable to delete token from database.");
       }
     },
   };

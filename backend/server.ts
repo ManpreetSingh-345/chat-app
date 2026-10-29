@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import app, { frontendOrigin } from "./src/app.js";
-import { handleSocketConnection } from "./src/utils/handleSocketConnection.js";
-import connectDB from "./src/db/db.js";
+import { handleSocketConnection } from "./src/utils/handleSocketConnection.ts";
+import connectDB from "./src/db/db.ts";
 
 process.on("uncaughtException", (err) => {
   console.log("Uncaught error encountered: ", err);
@@ -29,6 +29,6 @@ connectDB()
   .catch((err) => {
     console.log(
       "Error encountered during database connection. Error details: \n",
-      err
+      err,
     );
   });

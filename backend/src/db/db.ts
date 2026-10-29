@@ -1,8 +1,14 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  const dbUri = process.env.DB_URI;
+
+  if (!dbUri) {
+    throw new Error("DB_URI environment variable is not set");
+  }
+
   await mongoose
-    .connect(process.env.DB_URI, {
+    .connect(dbUri, {
       family: 4, // Forces IPv4 resolution
       serverSelectionTimeoutMS: 5000,
     })
