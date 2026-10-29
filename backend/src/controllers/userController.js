@@ -6,6 +6,7 @@ export const registerUser = async (req, res) => {
   const { username, password } = req.body;
   try {
     await userService.persistUser(username, password);
+    console.log("User added successfully");
     res.status(201).send({ message: "New user added successfully" });
   } catch (err) {
     console.log(err);

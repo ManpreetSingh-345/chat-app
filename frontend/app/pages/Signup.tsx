@@ -1,9 +1,10 @@
 import { Link } from "react-router";
 import api from "../api/api";
 import { useState } from "react";
+import { type User } from "../interfaces/User";
 
 const Signup = () => {
-  const [credentials, setCredentials] = useState({
+  const [userCredentials, setUserCredentials] = useState<User>({
     username: "",
     email: "",
     password: "",
@@ -12,13 +13,15 @@ const Signup = () => {
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(credentials);
+    console.log(userCredentials);
 
-    if (credentials.password !== confirmPassword) {
+    if (userCredentials.password !== confirmPassword) {
       alert("Passwords don't match");
     }
 
-    api.get("/").then(() => console.log("Request worked"));
+    api
+      .post("/users/new", userCredentials)
+      .then(() => console.log("Request worked"));
   };
 
   return (
@@ -45,7 +48,10 @@ const Signup = () => {
                 required
                 placeholder="Choose a username"
                 onChange={(e) =>
-                  setCredentials({ ...credentials, username: e.target.value })
+                  setUserCredentials({
+                    ...userCredentials,
+                    username: e.target.value,
+                  })
                 }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
@@ -63,7 +69,10 @@ const Signup = () => {
                 required
                 placeholder="you@example.com"
                 onChange={(e) =>
-                  setCredentials({ ...credentials, email: e.target.value })
+                  setUserCredentials({
+                    ...userCredentials,
+                    email: e.target.value,
+                  })
                 }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />
@@ -82,7 +91,10 @@ const Signup = () => {
                 required
                 placeholder="At least 8 characters"
                 onChange={(e) =>
-                  setCredentials({ ...credentials, password: e.target.value })
+                  setUserCredentials({
+                    ...userCredentials,
+                    password: e.target.value,
+                  })
                 }
                 className="w-full rounded-lg border border-slate-700 bg-slate-950/80 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/30"
               />

@@ -16,14 +16,14 @@ export const authenticateUser = async (req, res) => {
         process.env.ACCESS_TOKEN_SECRET,
         {
           expiresIn: "15m",
-        }
+        },
       );
       const refreshToken = jwt.sign(
         { id: user.id, role: user.role },
         process.env.REFRESH_TOKEN_SECRET,
         {
           expiresIn: "30m",
-        }
+        },
       );
       await tokenService.persistToken(user._id, refreshToken);
       res.cookie("refresh-token", refreshToken, {
@@ -89,7 +89,7 @@ export const refreshUserToken = async (req, res) => {
     const newAccessToken = jwt.sign(
       { id: decoded.id, role: decoded.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15m" },
     );
     return res.status(200).json({ newAccessToken });
   } catch (err) {
