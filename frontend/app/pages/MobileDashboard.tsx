@@ -1,5 +1,5 @@
-const MobileDashboard = () => {
-  return <div className="text-white">Mobile view of dashboard</div>;
-};
+import Dashboard from "./Dashboard";
+
+const MobileDashboard = () => <Dashboard />;
 
 export default MobileDashboard;
