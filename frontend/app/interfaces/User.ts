@@ -4,4 +4,9 @@ interface User {
   password: string;
 }
 
-export { type User };
+interface UserLoggedIn {
+  username: string;
+  refreshToken: string;
+}
+
+export type { User, UserLoggedIn };
