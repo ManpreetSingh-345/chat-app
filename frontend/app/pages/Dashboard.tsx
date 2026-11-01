@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from "react";
+import useAuth from "../hooks/useAuth";
 import {
   Archive,
   Bell,
@@ -23,6 +24,7 @@ import {
   Video,
   X,
 } from "lucide-react";
+import api from "../api/api";
 
 type Conversation = {
   id: number;
@@ -76,6 +78,28 @@ const Dashboard = () => {
   const [messages, setMessages] = useState(initialMessages); // Stores message log
   const [showDetails, setShowDetails] = useState(true); // Toggles conversation details (right sidebar)
   const messagesEndRef = useRef<HTMLDivElement>(null); // Used for moving the conversation window down automatically
+  const [user, setUser] = useAuth();
+
+  useEffect(() => {
+    const fetchRefresh = async () => {
+      try {
+        const res = await api.get("/auth/refresh");
+        const accessToken = res.data.newAccessToken;
+
+        await api
+          .get("/auth/me", {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          })
+          .then((res) => {
+            setUser({ username: res.data.username, accessToken: accessToken });
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchRefresh();
+  }, []);
 
   // Determines which conversation log to display based on user input
   // Defaults to the first conversation log
@@ -115,7 +139,7 @@ const Dashboard = () => {
       <aside className="w-19 shrink-0 flex-col items-center justify-between bg-[#0b1725] py-6 text-slate-400 sm:flex">
         <div className="flex flex-col items-center gap-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#28b9e8] text-lg font-bold text-[#071521] shadow-lg shadow-cyan-500/20">
-            C
+            {user.username}
           </div>
           <nav
             className="flex flex-col items-center gap-3"

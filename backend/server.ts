@@ -20,6 +20,7 @@ const io = new Server(server, {
 
 io.on("connection", handleSocketConnection);
 
+console.log("Running server...");
 connectDB()
   .then(() => {
     server.listen(process.env.PORT, () => {

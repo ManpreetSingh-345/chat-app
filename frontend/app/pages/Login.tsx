@@ -1,18 +1,27 @@
 import { Link } from "react-router";
 import { useState } from "react";
 import api from "../api/api";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
   const [userCredentials, setUserCredentials] = useState({
     username: "",
     password: "",
   });
+  const [_, setUser] = useAuth();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
+      console.log("Logging in");
       const res = await api.post("/auth/login", userCredentials);
-      console.log(res);
+      if (res.status === 200) {
+        console.log("Logged in");
+        setUser({
+          username: userCredentials.username,
+          accessToken: res.data?.accessToken,
+        });
+      }
     } catch (err) {
       console.log(err);
     }
@@ -74,7 +83,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full rounded-lg border border-[#38bdf8] bg-[#38bdf8] px-4 py-3 font-semibold text-slate-950 transition hover:bg-transparent hover:text-[#38bdf8] focus:outline-none focus:ring-2 focus:ring-[#38bdf8]/50"
+              className="w-full rounded-lg border border-[#38bdf8] bg-[#38bdf8] px-4 py-3 font-semibold text-slate-950 transition hover:bg-transparent hover:text-[#38bdf8] focus:outline-none focus:ring-2 focus:ring-[#38bdf8]/50 cursor-pointer"
             >
               Log In
             </button>

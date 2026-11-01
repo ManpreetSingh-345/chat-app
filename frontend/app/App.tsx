@@ -14,7 +14,7 @@ function App() {
   const matches = useMediaQuery("(min-width: 640px)");
   const currentUser = useState<UserLoggedIn>({
     username: "No user",
-    refreshToken: "",
+    accessToken: "",
   });
   return (
     <AuthContext.Provider value={currentUser}>

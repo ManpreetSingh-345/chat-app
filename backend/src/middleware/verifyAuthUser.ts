@@ -4,7 +4,8 @@ import type { Request, Response, NextFunction } from "express";
 declare global {
   namespace Express {
     interface Request {
-      user?: string;
+      username?: string;
+      id?: string;
     }
   }
 }
@@ -29,9 +30,10 @@ const verifyAuthUser = (req: Request, res: Response, next: NextFunction) => {
         .json({ message: "User not authorized to access resources" });
     }
 
-    const payload = decoded as JwtPayload & { username: string };
+    const payload = decoded as JwtPayload;
 
-    req.user = payload.username;
+    req.username = payload.username;
+    req.id = payload.id;
 
     next();
   });

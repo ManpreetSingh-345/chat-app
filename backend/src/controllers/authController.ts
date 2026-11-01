@@ -25,14 +25,14 @@ export const authenticateUser = async (req: Request, res: Response) => {
     const user = await userService.findUser(username, password);
     if (user) {
       const accessToken = jwt.sign(
-        { id: user._id, role: user.role },
+        { username: user.username, id: user._id, role: user.role },
         accessTokenSecret,
         {
           expiresIn: "15m",
         },
       );
       const refreshToken = jwt.sign(
-        { id: user._id, role: user.role },
+        { username: user.username, id: user._id, role: user.role },
         refreshTokenSecret,
         {
           expiresIn: "30m",
@@ -47,7 +47,6 @@ export const authenticateUser = async (req: Request, res: Response) => {
       return res.status(200).send({
         message: "Logged in successfully",
         accessToken,
-        refreshToken,
       });
     } else {
       return res.status(401).send({ message: "Invalid credentials" });
@@ -105,7 +104,7 @@ export const refreshUserToken = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Token not found in database" });
 
     const newAccessToken = jwt.sign(
-      { id: payload.id, role: payload.role },
+      { username: payload.username, id: payload.id, role: payload.role },
       accessTokenSecret,
       { expiresIn: "15m" },
     );
@@ -113,4 +112,10 @@ export const refreshUserToken = async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
   }
+};
+
+export const getUserData = async (req: Request, res: Response) => {
+  return res
+    .status(200)
+    .json({ message: "User acquired", username: req.username, id: req.id });
 };

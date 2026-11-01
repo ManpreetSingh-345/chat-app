@@ -6,7 +6,7 @@ interface User {
 
 interface UserLoggedIn {
   username: string;
-  refreshToken: string;
+  accessToken: string;
 }
 
 export type { User, UserLoggedIn };
