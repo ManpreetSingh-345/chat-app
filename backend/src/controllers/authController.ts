@@ -108,7 +108,9 @@ export const refreshUserToken = async (req: Request, res: Response) => {
       accessTokenSecret,
       { expiresIn: "15m" },
     );
-    return res.status(200).json({ newAccessToken });
+    return res
+      .status(200)
+      .json({ newAccessToken, username: payload.username, id: payload.id });
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
   }
