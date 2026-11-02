@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import api from "../api/api";
 import { useState } from "react";
 import { type User } from "../interfaces/User";
@@ -9,19 +9,20 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    console.log(userCredentials);
 
     if (userCredentials.password !== confirmPassword) {
       alert("Passwords don't match");
     }
 
-    api
-      .post("/users/new", userCredentials)
-      .then(() => console.log("Request worked"));
+    const res = await api.post("/users/new", userCredentials);
+    if (res.status === 201) {
+      navigate("/login");
+    }
   };
 
   return (

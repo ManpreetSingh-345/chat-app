@@ -83,16 +83,17 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchRefresh = async () => {
       try {
-        const res = await api.get("/auth/refresh");
-        const accessToken = res.data.newAccessToken;
+        const refreshRes = await api.get("/auth/refresh");
+        const accessToken = refreshRes.data.newAccessToken;
 
-        await api
-          .get("/auth/me", {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          })
-          .then((res) => {
-            setUser({ username: res.data.username, accessToken: accessToken });
-          });
+        const tokenRes = await api.get("/auth/me", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (tokenRes.status === 200) {
+          console.log(tokenRes);
+          setUser({ username: tokenRes.data.username, accessToken });
+        }
       } catch (err) {
         console.log(err);
       }
